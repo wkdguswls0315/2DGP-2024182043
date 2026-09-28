@@ -11,7 +11,8 @@ def draw_circle():
     center_x = 400
     center_y = 300
     radius = 100
-    for degree in range(0, 360, 10):
+    angle_step = 10
+    for degree in range(0, 360, angle_step):
         theta = math.radians(degree)
         x = center_x + radius * math.cos(theta)
         y = center_y + radius * math.sin(theta)
