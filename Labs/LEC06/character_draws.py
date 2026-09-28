@@ -44,6 +44,12 @@ def draw_left():
     for y in range(50, 551, 5):
         draw_character(50, y)
 
+def draw_triangle():
+    print("triangle")
+    for step in range(101):
+        x = 400 + step * 3
+        y = 550 - step * 5
+        draw_character(x, y)
 
 
 def draw_rectangle():
@@ -65,7 +71,7 @@ while running:
     # 필요한 부분만 실행하려면 아래 함수 호출의 주석을 바꾸세요.
     draw_circle()
     draw_rectangle()
-    # draw_triangle()
+    draw_triangle()
 
     for event in get_events():
         if event.type == SDL_QUIT:
