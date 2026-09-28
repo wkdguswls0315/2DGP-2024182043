@@ -28,10 +28,10 @@ def draw_circle():
     radius = 100
     angle_step = 10
 
-    for degree in range(0, 360, angle_step):
-        theta = math.radians(degree)
-        x = center_x + radius * math.cos(theta)
-        y = center_y + radius * math.sin(theta)
+    for angle_degrees in range(0, 360, angle_step):
+        angle_radians = math.radians(angle_degrees)
+        x = center_x + radius * math.cos(angle_radians)
+        y = center_y + radius * math.sin(angle_radians)
         draw_character(x, y)
 
 
@@ -69,9 +69,9 @@ def draw_rectangle():
 
 # 삼각운동
 def draw_triangle():
-    for step in range(101):
-        x = 400 + step * 3
-        y = 550 - step * 5
+    for step_index in range(101):
+        x = 400 + step_index * 3
+        y = 550 - step_index * 5
         draw_character(x, y)
 
 
@@ -83,24 +83,24 @@ def draw_triangle_bottom():
 
 # 삼각운동
 def draw_triangle_left():
-    for step in range(101):
-        x = 100 + step * 3
-        y = bottom + step * 5
+    for step_index in range(101):
+        x = 100 + step_index * 3
+        y = bottom + step_index * 5
         draw_character(x, y)
 
 
-running = True
-while running:
+is_running = True
+while is_running:
     draw_circle()
     draw_rectangle()
     draw_triangle()
     draw_triangle_bottom()
     draw_triangle_left()
 
-    for event in get_events():
-        if event.type == SDL_QUIT:
-            running = False
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            running = False
+    for input_event in get_events():
+        if input_event.type == SDL_QUIT:
+            is_running = False
+        elif input_event.type == SDL_KEYDOWN and input_event.key == SDLK_ESCAPE:
+            is_running = False
 
 close_canvas()
