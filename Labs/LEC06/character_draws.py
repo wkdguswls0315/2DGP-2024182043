@@ -73,11 +73,10 @@ def draw_rectangle():
 
 running = True
 while running:
-    # 필요한 부분만 실행하려면 아래 함수 호출의 주석을 바꾸세요.
-    # draw_circle()
-    # draw_rectangle()
-    # draw_triangle()
-    # draw_triangle_bottom()
+    draw_circle()
+    draw_rectangle()
+    draw_triangle()
+    draw_triangle_bottom()
     draw_triangle_left()
 
     for event in get_events():
