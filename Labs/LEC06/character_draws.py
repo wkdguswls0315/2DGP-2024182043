@@ -12,6 +12,7 @@ bottom = 50
 speed = 5
 
 
+# 원운동
 def draw_circle():
     center_x = 400
     center_y = 300
@@ -24,6 +25,7 @@ def draw_circle():
         draw_character(x, y)
 
 
+# 사각운동
 def draw_top():
     for x in range(left, right + 1, speed):
         draw_character(x, top)
@@ -34,28 +36,34 @@ def draw_character(x, y):
     update_canvas()
     delay(0.02)
 
+# 사각운동
 def draw_right():
     for y in range(top, bottom - 1, -speed):
         draw_character(right, y)
 
+# 사각운동
 def draw_bottom():
     for x in range(right, left - 1, -speed):
         draw_character(x, bottom)
 
+# 사각운동
 def draw_left():
     for y in range(bottom, top + 1, speed):
         draw_character(left, y)
 
+# 삼각운동
 def draw_triangle():
     for step in range(101):
         x = 400 + step * 3
         y = 550 - step * 5
         draw_character(x, y)
 
+# 삼각운동
 def draw_triangle_bottom():
     for x in range(700, 99, -speed):
         draw_character(x, 50)
 
+# 삼각운동
 def draw_triangle_left():
     for step in range(101):
         x = 100 + step * 3
@@ -63,6 +71,7 @@ def draw_triangle_left():
         draw_character(x, y)
 
 
+# 사각운동
 def draw_rectangle():
     draw_top()
     draw_right()
