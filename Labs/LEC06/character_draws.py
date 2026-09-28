@@ -10,10 +10,11 @@ def draw_circle():
     print("circle")
     center_x = 400
     center_y = 300
+    radius = 100
     for degree in range(0, 360, 10):
         theta = math.radians(degree)
-        x = center_x + 100 * math.cos(theta)
-        y = center_y + 100 * math.sin(theta)
+        x = center_x + radius * math.cos(theta)
+        y = center_y + radius * math.sin(theta)
         clear_canvas()
         character.draw(x, y)
         update_canvas()
