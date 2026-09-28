@@ -87,9 +87,9 @@ while running:
     draw_triangle_left()
 
     for event in get_events():
-        if event.type == SDL_QUIT:
-            running = False
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+        if event.type == SDL_QUIT or (
+            event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE
+        ):
             running = False
 
 close_canvas()
