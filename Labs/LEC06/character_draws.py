@@ -21,21 +21,6 @@ def draw_character(x, y):
     delay(0.02)
 
 
-# 원운동
-def draw_circle():
-    print("Circle")
-    center_x = 400
-    center_y = 300
-    radius = 100
-    angle_step = 10
-
-    for angle_degrees in range(0, 360, angle_step):
-        angle_radians = math.radians(angle_degrees)
-        x = center_x + radius * math.cos(angle_radians)
-        y = center_y + radius * math.sin(angle_radians)
-        draw_character(x, y)
-
-
 # 사각운동
 def draw_top():
     for x in range(left, right + 1, speed):
@@ -67,6 +52,21 @@ def draw_rectangle():
     draw_right()
     draw_bottom()
     draw_left()
+
+
+# 원운동
+def draw_circle():
+    print("Circle")
+    center_x = 400
+    center_y = 300
+    radius = 100
+    angle_step = 10
+
+    for angle_degrees in range(0, 360, angle_step):
+        angle_radians = math.radians(angle_degrees)
+        x = center_x + radius * math.cos(angle_radians)
+        y = center_y + radius * math.sin(angle_radians)
+        draw_character(x, y)
 
 
 # 삼각운동
