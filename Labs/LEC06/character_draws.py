@@ -20,27 +20,26 @@ def draw_circle():
 
 def draw_top():
     print("top")
-    for x in range(50, 750, 5):
-        draw_character(x)
-    pass
+    for x in range(50, 751, 5):
+        draw_character(x, 550)
 
-def draw_character(x):
+def draw_character(x, y):
     clear_canvas()
-    character.draw(x, 550)
+    character.draw(x, y)
     update_canvas()
     delay(0.01)
 
-def draw_left():
-    print("left")
-    pass
+def draw_right():
+    print("right")
+    for y in range(550, 49, -5):
+        draw_character(750, y)
 
 def draw_bottom():
     print("bottom")
     pass
 
-
-def draw_right():
-    print("right")
+def draw_left():
+    print("left")
     pass
 
 
@@ -66,6 +65,9 @@ while running:
     # 필요한 부분만 실행하려면 아래 함수 호출의 주석을 바꾸세요.
     # draw_circle()
     draw_top()
+    draw_right()
+    # draw_bottom()
+    # draw_left()
     # draw_rectangle()
     # draw_triangle()
 
