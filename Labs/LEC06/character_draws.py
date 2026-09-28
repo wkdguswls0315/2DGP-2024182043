@@ -23,6 +23,7 @@ def draw_character(x, y):
 
 # 원운동
 def draw_circle():
+    print("Circle")
     center_x = 400
     center_y = 300
     radius = 100
@@ -61,6 +62,7 @@ def draw_left():
 
 # 사각운동
 def draw_rectangle():
+    print("Rectangle")
     draw_top()
     draw_right()
     draw_bottom()
@@ -69,6 +71,7 @@ def draw_rectangle():
 
 # 삼각운동
 def draw_triangle():
+    print("Triangle")
     for step_index in range(101):
         x = 400 + step_index * 3
         y = 550 - step_index * 5
