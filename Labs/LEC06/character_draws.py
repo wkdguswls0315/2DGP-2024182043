@@ -5,6 +5,11 @@ import math
 open_canvas(800, 600)
 character = load_image('character.png')
 
+left = 50
+right = 750
+top = 550
+bottom = 50
+
 
 def draw_circle():
     print("circle")
@@ -24,8 +29,8 @@ def draw_circle():
 
 def draw_top():
     print("top")
-    for x in range(50, 751, 5):
-        draw_character(x, 550)
+    for x in range(left, right + 1, 5):
+        draw_character(x, top)
 
 def draw_character(x, y):
     clear_canvas()
@@ -35,18 +40,18 @@ def draw_character(x, y):
 
 def draw_right():
     print("right")
-    for y in range(550, 49, -5):
-        draw_character(750, y)
+    for y in range(top, bottom - 1, -5):
+        draw_character(right, y)
 
 def draw_bottom():
     print("bottom")
-    for x in range(750, 49, -5):
-        draw_character(x, 50)
+    for x in range(right, left - 1, -5):
+        draw_character(x, bottom)
 
 def draw_left():
     print("left")
-    for y in range(50, 551, 5):
-        draw_character(50, y)
+    for y in range(bottom, top + 1, 5):
+        draw_character(left, y)
 
 def draw_triangle():
     print("triangle")
