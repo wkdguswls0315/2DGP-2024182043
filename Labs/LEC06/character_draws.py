@@ -9,6 +9,7 @@ left = 50
 right = 750
 top = 550
 bottom = 50
+speed = 5
 
 
 def draw_circle():
@@ -29,7 +30,7 @@ def draw_circle():
 
 def draw_top():
     print("top")
-    for x in range(left, right + 1, 5):
+    for x in range(left, right + 1, speed):
         draw_character(x, top)
 
 def draw_character(x, y):
@@ -40,17 +41,17 @@ def draw_character(x, y):
 
 def draw_right():
     print("right")
-    for y in range(top, bottom - 1, -5):
+    for y in range(top, bottom - 1, -speed):
         draw_character(right, y)
 
 def draw_bottom():
     print("bottom")
-    for x in range(right, left - 1, -5):
+    for x in range(right, left - 1, -speed):
         draw_character(x, bottom)
 
 def draw_left():
     print("left")
-    for y in range(bottom, top + 1, 5):
+    for y in range(bottom, top + 1, speed):
         draw_character(left, y)
 
 def draw_triangle():
@@ -62,7 +63,7 @@ def draw_triangle():
 
 def draw_triangle_bottom():
     print("triangle bottom")
-    for x in range(700, 99, -5):
+    for x in range(700, 99, -speed):
         draw_character(x, 50)
 
 def draw_triangle_left():
