@@ -15,7 +15,7 @@ def draw_circle():
         clear_canvas()
         character.draw(x, y)
         update_canvas()
-        delay(0.03)
+        delay(0.02)
 
 
 def draw_top():
@@ -27,7 +27,7 @@ def draw_character(x, y):
     clear_canvas()
     character.draw(x, y)
     update_canvas()
-    delay(0.03)
+    delay(0.02)
 
 def draw_right():
     print("right")
