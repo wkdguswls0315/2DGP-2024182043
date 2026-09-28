@@ -41,7 +41,8 @@ def draw_bottom():
 
 def draw_left():
     print("left")
-    pass
+    for y in range(50, 551, 5):
+        draw_character(50, y)
 
 
 
@@ -68,7 +69,7 @@ while running:
     draw_top()
     draw_right()
     draw_bottom()
-    # draw_left()
+    draw_left()
     # draw_rectangle()
     # draw_triangle()
 
