@@ -20,7 +20,15 @@ def draw_circle():
 
 def draw_top():
     print("top")
+    for x in range(50, 750, 5):
+        draw_character(x)
     pass
+
+def draw_character(x):
+    clear_canvas()
+    character.draw(x, 550)
+    update_canvas()
+    delay(0.01)
 
 def draw_left():
     print("left")
@@ -29,6 +37,7 @@ def draw_left():
 def draw_bottom():
     print("bottom")
     pass
+
 
 def draw_right():
     print("right")
@@ -54,9 +63,11 @@ def draw_triangle():
 
 running = True
 while running:
-    draw_circle()
-    draw_rectangle()
-    draw_triangle() 
+    # 필요한 부분만 실행하려면 아래 함수 호출의 주석을 바꾸세요.
+    # draw_circle()
+    draw_top()
+    # draw_rectangle()
+    # draw_triangle()
 
     for event in get_events():
         if event.type == SDL_QUIT:
