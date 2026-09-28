@@ -21,10 +21,7 @@ def draw_circle():
         theta = math.radians(degree)
         x = center_x + radius * math.cos(theta)
         y = center_y + radius * math.sin(theta)
-        clear_canvas()
-        character.draw(x, y)
-        update_canvas()
-        delay(0.02)
+        draw_character(x, y)
 
 
 def draw_top():
