@@ -13,7 +13,6 @@ speed = 5
 
 
 def draw_circle():
-    print("circle")
     center_x = 400
     center_y = 300
     radius = 100
@@ -29,7 +28,6 @@ def draw_circle():
 
 
 def draw_top():
-    print("top")
     for x in range(left, right + 1, speed):
         draw_character(x, top)
 
@@ -40,34 +38,28 @@ def draw_character(x, y):
     delay(0.02)
 
 def draw_right():
-    print("right")
     for y in range(top, bottom - 1, -speed):
         draw_character(right, y)
 
 def draw_bottom():
-    print("bottom")
     for x in range(right, left - 1, -speed):
         draw_character(x, bottom)
 
 def draw_left():
-    print("left")
     for y in range(bottom, top + 1, speed):
         draw_character(left, y)
 
 def draw_triangle():
-    print("triangle")
     for step in range(101):
         x = 400 + step * 3
         y = 550 - step * 5
         draw_character(x, y)
 
 def draw_triangle_bottom():
-    print("triangle bottom")
     for x in range(700, 99, -speed):
         draw_character(x, 50)
 
 def draw_triangle_left():
-    print("triangle left")
     for step in range(101):
         x = 100 + step * 3
         y = 50 + step * 5
@@ -75,7 +67,6 @@ def draw_triangle_left():
 
 
 def draw_rectangle():
-    print("rectangle")
     draw_top()
     draw_right()
     draw_bottom()
