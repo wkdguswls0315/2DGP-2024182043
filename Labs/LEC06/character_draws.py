@@ -56,6 +56,13 @@ def draw_triangle_bottom():
     for x in range(700, 99, -5):
         draw_character(x, 50)
 
+def draw_triangle_left():
+    print("triangle left")
+    for step in range(101):
+        x = 100 + step * 3
+        y = 50 + step * 5
+        draw_character(x, y)
+
 
 def draw_rectangle():
     print("rectangle")
@@ -70,7 +77,8 @@ while running:
     # draw_circle()
     # draw_rectangle()
     # draw_triangle()
-    draw_triangle_bottom()
+    # draw_triangle_bottom()
+    draw_triangle_left()
 
     for event in get_events():
         if event.type == SDL_QUIT:
