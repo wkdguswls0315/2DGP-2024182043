@@ -48,12 +48,10 @@ def draw_left():
 
 def draw_rectangle():
     print("rectangle")
-    clear_canvas()
     draw_top()
-    draw_left()
-    draw_bottom()
     draw_right()
-    pass
+    draw_bottom()
+    draw_left()
 
 def draw_triangle():
     print("triangle")
@@ -65,12 +63,8 @@ def draw_triangle():
 running = True
 while running:
     # 필요한 부분만 실행하려면 아래 함수 호출의 주석을 바꾸세요.
-    # draw_circle()
-    draw_top()
-    draw_right()
-    draw_bottom()
-    draw_left()
-    # draw_rectangle()
+    draw_circle()
+    draw_rectangle()
     # draw_triangle()
 
     for event in get_events():
