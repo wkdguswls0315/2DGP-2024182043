@@ -18,6 +18,13 @@ RUN_FRAME_WIDTH = 81
 RUN_FRAME_HEIGHT = 80
 RUN_FRAME_DELAY = 0.05
 RUN_MOVEMENT_STEP = 14
+RUN_ATTACK_FRAME_COUNT = 4
+RUN_ATTACK_FRAME_LEFT = 91
+RUN_ATTACK_FRAME_BOTTOM = 135
+RUN_ATTACK_FRAME_WIDTH = 81
+RUN_ATTACK_FRAME_HEIGHT = 80
+RUN_ATTACK_FRAME_DELAY = 0.08
+RUN_ATTACK_MOVEMENT_STEP = 11
 CHARACTER_X_MIN = 80
 CHARACTER_X_MAX = 720
 CHARACTER_Y = 300
@@ -62,7 +69,7 @@ while running:
             frame_height = WALK_FRAME_HEIGHT
             frame_delay = WALK_FRAME_DELAY
             movement_step = WALK_MOVEMENT_STEP
-        else:
+        elif action == "run":
             frame_count = RUN_FRAME_COUNT
             frame_left = RUN_FRAME_LEFT
             frame_bottom = RUN_FRAME_BOTTOM
@@ -70,6 +77,14 @@ while running:
             frame_height = RUN_FRAME_HEIGHT
             frame_delay = RUN_FRAME_DELAY
             movement_step = RUN_MOVEMENT_STEP
+        else:
+            frame_count = RUN_ATTACK_FRAME_COUNT
+            frame_left = RUN_ATTACK_FRAME_LEFT
+            frame_bottom = RUN_ATTACK_FRAME_BOTTOM
+            frame_width = RUN_ATTACK_FRAME_WIDTH
+            frame_height = RUN_ATTACK_FRAME_HEIGHT
+            frame_delay = RUN_ATTACK_FRAME_DELAY
+            movement_step = RUN_ATTACK_MOVEMENT_STEP
 
         clear_canvas()
         sprite_sheet.clip_draw(0, 0, 40, 40, 400, 300, 800, 600)
@@ -114,6 +129,8 @@ while running:
                 pause_until = time.monotonic() + SEQUENCE_PAUSE
                 if action == "walk":
                     next_action = "run"
+                elif action == "run":
+                    next_action = "run_attack"
 
         delay(frame_delay)
 
