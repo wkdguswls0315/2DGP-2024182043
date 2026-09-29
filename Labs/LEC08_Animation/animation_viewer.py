@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from pico2d import *
 
 
@@ -26,19 +28,21 @@ def print_frame_ranges():
 print_frame_ranges()
 
 open_canvas(800, 600)
-sprite_sheet = load_image("sprite_sheet.jpg")
+sprite_sheet = load_image(str(Path(__file__).resolve().with_name("sprite_sheet.jpg")))
 
-while True:
+running = True
+while running:
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
-            close_canvas()
-            quit()
+            running = False
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            close_canvas()
-            quit()
+            running = False
 
-    clear_canvas()
-    sprite_sheet.draw(400, 300)
-    update_canvas()
-    delay(0.01)
+    if running:
+        clear_canvas()
+        sprite_sheet.draw(400, 300)
+        update_canvas()
+        delay(0.01)
+
+close_canvas()
