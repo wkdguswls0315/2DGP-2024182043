@@ -30,6 +30,7 @@ ATTACK_1_FRAME_BOTTOM = 45
 ATTACK_1_FRAME_WIDTH = 81
 ATTACK_1_FRAME_HEIGHT = 80
 ATTACK_1_FRAME_DELAY = 0.12
+ATTACK_1_MOVEMENT_STEP = 11
 CHARACTER_X_MIN = 80
 CHARACTER_X_MAX = 720
 CHARACTER_Y = 300
@@ -97,7 +98,7 @@ while running:
             frame_width = ATTACK_1_FRAME_WIDTH
             frame_height = ATTACK_1_FRAME_HEIGHT
             frame_delay = ATTACK_1_FRAME_DELAY
-            movement_step = 0
+            movement_step = ATTACK_1_MOVEMENT_STEP
 
         if action == "attack1":
             frame_x = ATTACK_1_FRAME_LEFTS[frame]
@@ -137,24 +138,20 @@ while running:
             continue
 
         frame = (frame + 1) % frame_count
-        if action == "attack1":
-            if frame == 0:
+        character_x += direction * movement_step
+        if character_x >= CHARACTER_X_MAX or character_x <= CHARACTER_X_MIN:
+            character_x = min(max(character_x, CHARACTER_X_MIN), CHARACTER_X_MAX)
+            direction *= -1
+            traversal_count += 1
+            if traversal_count == TRAVERSALS_PER_ROUND_TRIP:
+                traversal_count = 0
                 pause_until = time.monotonic() + SEQUENCE_PAUSE
-        else:
-            character_x += direction * movement_step
-            if character_x >= CHARACTER_X_MAX or character_x <= CHARACTER_X_MIN:
-                character_x = min(max(character_x, CHARACTER_X_MIN), CHARACTER_X_MAX)
-                direction *= -1
-                traversal_count += 1
-                if traversal_count == TRAVERSALS_PER_ROUND_TRIP:
-                    traversal_count = 0
-                    pause_until = time.monotonic() + SEQUENCE_PAUSE
-                    if action == "walk":
-                        next_action = "run"
-                    elif action == "run":
-                        next_action = "run_attack"
-                    elif action == "run_attack":
-                        next_action = "attack1"
+                if action == "walk":
+                    next_action = "run"
+                elif action == "run":
+                    next_action = "run_attack"
+                elif action == "run_attack":
+                    next_action = "attack1"
 
         delay(frame_delay)
 
