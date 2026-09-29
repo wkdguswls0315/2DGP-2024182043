@@ -16,7 +16,7 @@ CHARACTER_Y = 300
 CHARACTER_WIDTH = 162
 CHARACTER_HEIGHT = 160
 MOVEMENT_STEP = 8
-WALKS_PER_SEQUENCE = 5
+TRAVERSALS_PER_ROUND_TRIP = 2
 SEQUENCE_PAUSE = 1.0
 
 open_canvas(800, 600)
@@ -25,7 +25,7 @@ sprite_sheet = load_image(str(Path(__file__).resolve().with_name("sprite_sheet.j
 frame = 0
 character_x = CHARACTER_X_MIN
 direction = 1
-walk_count = 0
+traversal_count = 0
 pause_until = 0.0
 running = True
 while running:
@@ -77,9 +77,9 @@ while running:
         if character_x >= CHARACTER_X_MAX or character_x <= CHARACTER_X_MIN:
             character_x = min(max(character_x, CHARACTER_X_MIN), CHARACTER_X_MAX)
             direction *= -1
-            walk_count += 1
-            if walk_count == WALKS_PER_SEQUENCE:
-                walk_count = 0
+            traversal_count += 1
+            if traversal_count == TRAVERSALS_PER_ROUND_TRIP:
+                traversal_count = 0
                 pause_until = time.monotonic() + SEQUENCE_PAUSE
 
         delay(FRAME_DELAY)
