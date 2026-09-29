@@ -25,6 +25,11 @@ RUN_ATTACK_FRAME_WIDTH = 81
 RUN_ATTACK_FRAME_HEIGHT = 80
 RUN_ATTACK_FRAME_DELAY = 0.08
 RUN_ATTACK_MOVEMENT_STEP = 11
+ATTACK_1_FRAME_LEFTS = (91, 172, 280, 400)
+ATTACK_1_FRAME_BOTTOM = 45
+ATTACK_1_FRAME_WIDTH = 81
+ATTACK_1_FRAME_HEIGHT = 80
+ATTACK_1_FRAME_DELAY = 0.12
 CHARACTER_X_MIN = 80
 CHARACTER_X_MAX = 720
 CHARACTER_Y = 300
@@ -77,7 +82,7 @@ while running:
             frame_height = RUN_FRAME_HEIGHT
             frame_delay = RUN_FRAME_DELAY
             movement_step = RUN_MOVEMENT_STEP
-        else:
+        elif action == "run_attack":
             frame_count = RUN_ATTACK_FRAME_COUNT
             frame_left = RUN_ATTACK_FRAME_LEFT
             frame_bottom = RUN_ATTACK_FRAME_BOTTOM
@@ -85,12 +90,25 @@ while running:
             frame_height = RUN_ATTACK_FRAME_HEIGHT
             frame_delay = RUN_ATTACK_FRAME_DELAY
             movement_step = RUN_ATTACK_MOVEMENT_STEP
+        else:
+            frame_count = len(ATTACK_1_FRAME_LEFTS)
+            frame_left = 0
+            frame_bottom = ATTACK_1_FRAME_BOTTOM
+            frame_width = ATTACK_1_FRAME_WIDTH
+            frame_height = ATTACK_1_FRAME_HEIGHT
+            frame_delay = ATTACK_1_FRAME_DELAY
+            movement_step = 0
+
+        if action == "attack1":
+            frame_x = ATTACK_1_FRAME_LEFTS[frame]
+        else:
+            frame_x = frame_left + frame * frame_width
 
         clear_canvas()
         sprite_sheet.clip_draw(0, 0, 40, 40, 400, 300, 800, 600)
         if direction > 0:
             sprite_sheet.clip_draw(
-                frame_left + frame * frame_width,
+                frame_x,
                 frame_bottom,
                 frame_width,
                 frame_height,
@@ -101,7 +119,7 @@ while running:
             )
         else:
             sprite_sheet.clip_composite_draw(
-                frame_left + frame * frame_width,
+                frame_x,
                 frame_bottom,
                 frame_width,
                 frame_height,
@@ -119,18 +137,24 @@ while running:
             continue
 
         frame = (frame + 1) % frame_count
-        character_x += direction * movement_step
-        if character_x >= CHARACTER_X_MAX or character_x <= CHARACTER_X_MIN:
-            character_x = min(max(character_x, CHARACTER_X_MIN), CHARACTER_X_MAX)
-            direction *= -1
-            traversal_count += 1
-            if traversal_count == TRAVERSALS_PER_ROUND_TRIP:
-                traversal_count = 0
+        if action == "attack1":
+            if frame == 0:
                 pause_until = time.monotonic() + SEQUENCE_PAUSE
-                if action == "walk":
-                    next_action = "run"
-                elif action == "run":
-                    next_action = "run_attack"
+        else:
+            character_x += direction * movement_step
+            if character_x >= CHARACTER_X_MAX or character_x <= CHARACTER_X_MIN:
+                character_x = min(max(character_x, CHARACTER_X_MIN), CHARACTER_X_MAX)
+                direction *= -1
+                traversal_count += 1
+                if traversal_count == TRAVERSALS_PER_ROUND_TRIP:
+                    traversal_count = 0
+                    pause_until = time.monotonic() + SEQUENCE_PAUSE
+                    if action == "walk":
+                        next_action = "run"
+                    elif action == "run":
+                        next_action = "run_attack"
+                    elif action == "run_attack":
+                        next_action = "attack1"
 
         delay(frame_delay)
 
