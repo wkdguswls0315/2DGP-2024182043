@@ -43,6 +43,7 @@ CHARACTER_Y = 300
 CHARACTER_WIDTH = 267
 CHARACTER_HEIGHT = 264
 ACTION_SEQUENCE = ("walk", "run", "run_attack", "attack1")
+TRAVERSALS_PER_ACTION = 5
 SEQUENCE_PAUSE = 1.0
 
 open_canvas(800, 600)
@@ -54,6 +55,8 @@ character_x = CHARACTER_X_MIN
 direction = 1
 action = "walk"
 action_index = 0
+traversal_count = 0
+action_change_pending = False
 pause_until = 0.0
 running = True
 while running:
@@ -67,9 +70,12 @@ while running:
     if running:
         now = time.monotonic()
         if pause_until and now >= pause_until:
-            action_index = (action_index + 1) % len(ACTION_SEQUENCE)
-            action = ACTION_SEQUENCE[action_index]
-            frame = 0
+            if action_change_pending:
+                action_index = (action_index + 1) % len(ACTION_SEQUENCE)
+                action = ACTION_SEQUENCE[action_index]
+                traversal_count = 0
+                action_change_pending = False
+                frame = 0
             pause_until = 0.0
         paused = now < pause_until
         if action == "walk":
@@ -155,6 +161,9 @@ while running:
             direction *= -1
             pause_until = time.monotonic() + SEQUENCE_PAUSE
             idle_frame = 0
+            traversal_count += 1
+            if traversal_count == TRAVERSALS_PER_ACTION:
+                action_change_pending = True
 
         delay(frame_delay)
 
