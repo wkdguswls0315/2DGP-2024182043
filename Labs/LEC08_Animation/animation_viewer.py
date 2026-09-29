@@ -36,7 +36,7 @@ CHARACTER_X_MAX = 720
 CHARACTER_Y = 300
 CHARACTER_WIDTH = 243
 CHARACTER_HEIGHT = 240
-TRAVERSALS_PER_ROUND_TRIP = 2
+ACTION_SEQUENCE = ("walk", "run", "run_attack", "attack1")
 SEQUENCE_PAUSE = 1.0
 
 open_canvas(800, 600)
@@ -45,9 +45,8 @@ sprite_sheet = load_image(str(Path(__file__).resolve().with_name("sprite_sheet.j
 frame = 0
 character_x = CHARACTER_X_MIN
 direction = 1
-traversal_count = 0
 action = "walk"
-next_action = None
+action_index = 0
 pause_until = 0.0
 running = True
 while running:
@@ -61,10 +60,9 @@ while running:
     if running:
         now = time.monotonic()
         if pause_until and now >= pause_until:
-            if next_action is not None:
-                action = next_action
-                next_action = None
-                frame = 0
+            action_index = (action_index + 1) % len(ACTION_SEQUENCE)
+            action = ACTION_SEQUENCE[action_index]
+            frame = 0
             pause_until = 0.0
         paused = now < pause_until
         if action == "walk":
@@ -142,16 +140,7 @@ while running:
         if character_x >= CHARACTER_X_MAX or character_x <= CHARACTER_X_MIN:
             character_x = min(max(character_x, CHARACTER_X_MIN), CHARACTER_X_MAX)
             direction *= -1
-            traversal_count += 1
-            if traversal_count == TRAVERSALS_PER_ROUND_TRIP:
-                traversal_count = 0
-                pause_until = time.monotonic() + SEQUENCE_PAUSE
-                if action == "walk":
-                    next_action = "run"
-                elif action == "run":
-                    next_action = "run_attack"
-                elif action == "run_attack":
-                    next_action = "attack1"
+            pause_until = time.monotonic() + SEQUENCE_PAUSE
 
         delay(frame_delay)
 
