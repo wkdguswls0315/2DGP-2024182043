@@ -4,6 +4,12 @@ import time
 from pico2d import *
 
 
+IDLE_FRAME_COUNT = 6
+IDLE_FRAME_LEFT = 91
+IDLE_FRAME_BOTTOM = 414
+IDLE_FRAME_WIDTH = 81
+IDLE_FRAME_HEIGHT = 80
+IDLE_FRAME_DELAY = 0.12
 WALK_FRAME_COUNT = 8
 WALK_FRAME_LEFT = 91
 WALK_FRAME_BOTTOM = 313
@@ -43,6 +49,7 @@ open_canvas(800, 600)
 sprite_sheet = load_image(str(Path(__file__).resolve().with_name("sprite_sheet.jpg")))
 
 frame = 0
+idle_frame = 0
 character_x = CHARACTER_X_MIN
 direction = 1
 action = "walk"
@@ -98,7 +105,12 @@ while running:
             frame_delay = ATTACK_1_FRAME_DELAY
             movement_step = ATTACK_1_MOVEMENT_STEP
 
-        if action == "attack1":
+        if paused:
+            frame_x = IDLE_FRAME_LEFT + idle_frame * IDLE_FRAME_WIDTH
+            frame_bottom = IDLE_FRAME_BOTTOM
+            frame_width = IDLE_FRAME_WIDTH
+            frame_height = IDLE_FRAME_HEIGHT
+        elif action == "attack1":
             frame_x = ATTACK_1_FRAME_LEFTS[frame]
         else:
             frame_x = frame_left + frame * frame_width
@@ -132,7 +144,8 @@ while running:
         update_canvas()
 
         if paused:
-            delay(0.01)
+            idle_frame = (idle_frame + 1) % IDLE_FRAME_COUNT
+            delay(IDLE_FRAME_DELAY)
             continue
 
         frame = (frame + 1) % frame_count
@@ -141,6 +154,7 @@ while running:
             character_x = min(max(character_x, CHARACTER_X_MIN), CHARACTER_X_MAX)
             direction *= -1
             pause_until = time.monotonic() + SEQUENCE_PAUSE
+            idle_frame = 0
 
         delay(frame_delay)
 
