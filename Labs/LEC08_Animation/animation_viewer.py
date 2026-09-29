@@ -16,34 +16,30 @@ WALK_FRAME_BOTTOM = 313
 WALK_FRAME_WIDTH = 81
 WALK_FRAME_HEIGHT = 80
 WALK_FRAME_DELAY = 0.075
-WALK_MOVEMENT_STEP = 20
 RUN_FRAME_COUNT = 6
 RUN_FRAME_LEFT = 91
 RUN_FRAME_BOTTOM = 225
 RUN_FRAME_WIDTH = 81
 RUN_FRAME_HEIGHT = 80
 RUN_FRAME_DELAY = 0.05
-RUN_MOVEMENT_STEP = 16
 RUN_ATTACK_FRAME_COUNT = 4
 RUN_ATTACK_FRAME_LEFT = 91
 RUN_ATTACK_FRAME_BOTTOM = 135
 RUN_ATTACK_FRAME_WIDTH = 81
 RUN_ATTACK_FRAME_HEIGHT = 80
 RUN_ATTACK_FRAME_DELAY = 0.08
-RUN_ATTACK_MOVEMENT_STEP = 13
 ATTACK_1_FRAME_LEFTS = (91, 172, 280, 400)
 ATTACK_1_FRAME_BOTTOM = 45
 ATTACK_1_FRAME_WIDTH = 81
 ATTACK_1_FRAME_HEIGHT = 80
 ATTACK_1_FRAME_DELAY = 0.12
-ATTACK_1_MOVEMENT_STEP = 13
 CHARACTER_X_MIN = 134
 CHARACTER_X_MAX = 666
 CHARACTER_Y = 300
 CHARACTER_WIDTH = 267
 CHARACTER_HEIGHT = 264
 ACTION_SEQUENCE = ("walk", "run", "run_attack", "attack1")
-TRAVERSALS_PER_ACTION = 5
+ANIMATION_CYCLES_PER_TRAVERSAL = 5
 SEQUENCE_PAUSE = 1.0
 
 open_canvas(800, 600)
@@ -55,8 +51,7 @@ character_x = CHARACTER_X_MIN
 direction = 1
 action = "walk"
 action_index = 0
-traversal_count = 0
-action_change_pending = False
+steps_in_action = 0
 pause_until = 0.0
 running = True
 while running:
@@ -70,12 +65,10 @@ while running:
     if running:
         now = time.monotonic()
         if pause_until and now >= pause_until:
-            if action_change_pending:
-                action_index = (action_index + 1) % len(ACTION_SEQUENCE)
-                action = ACTION_SEQUENCE[action_index]
-                traversal_count = 0
-                action_change_pending = False
-                frame = 0
+            action_index = (action_index + 1) % len(ACTION_SEQUENCE)
+            action = ACTION_SEQUENCE[action_index]
+            frame = 0
+            steps_in_action = 0
             pause_until = 0.0
         paused = now < pause_until
         if action == "walk":
@@ -85,7 +78,6 @@ while running:
             frame_width = WALK_FRAME_WIDTH
             frame_height = WALK_FRAME_HEIGHT
             frame_delay = WALK_FRAME_DELAY
-            movement_step = WALK_MOVEMENT_STEP
         elif action == "run":
             frame_count = RUN_FRAME_COUNT
             frame_left = RUN_FRAME_LEFT
@@ -93,7 +85,6 @@ while running:
             frame_width = RUN_FRAME_WIDTH
             frame_height = RUN_FRAME_HEIGHT
             frame_delay = RUN_FRAME_DELAY
-            movement_step = RUN_MOVEMENT_STEP
         elif action == "run_attack":
             frame_count = RUN_ATTACK_FRAME_COUNT
             frame_left = RUN_ATTACK_FRAME_LEFT
@@ -101,7 +92,6 @@ while running:
             frame_width = RUN_ATTACK_FRAME_WIDTH
             frame_height = RUN_ATTACK_FRAME_HEIGHT
             frame_delay = RUN_ATTACK_FRAME_DELAY
-            movement_step = RUN_ATTACK_MOVEMENT_STEP
         else:
             frame_count = len(ATTACK_1_FRAME_LEFTS)
             frame_left = 0
@@ -109,7 +99,10 @@ while running:
             frame_width = ATTACK_1_FRAME_WIDTH
             frame_height = ATTACK_1_FRAME_HEIGHT
             frame_delay = ATTACK_1_FRAME_DELAY
-            movement_step = ATTACK_1_MOVEMENT_STEP
+        steps_per_traversal = frame_count * ANIMATION_CYCLES_PER_TRAVERSAL
+        movement_step = (
+            (CHARACTER_X_MAX - CHARACTER_X_MIN) / steps_per_traversal
+        )
 
         if paused:
             frame_x = IDLE_FRAME_LEFT + idle_frame * IDLE_FRAME_WIDTH
@@ -155,15 +148,16 @@ while running:
             continue
 
         frame = (frame + 1) % frame_count
-        character_x += direction * movement_step
-        if character_x >= CHARACTER_X_MAX or character_x <= CHARACTER_X_MIN:
-            character_x = min(max(character_x, CHARACTER_X_MIN), CHARACTER_X_MAX)
+        steps_in_action += 1
+        if steps_in_action == steps_per_traversal:
+            character_x = (
+                CHARACTER_X_MAX if direction > 0 else CHARACTER_X_MIN
+            )
             direction *= -1
             pause_until = time.monotonic() + SEQUENCE_PAUSE
             idle_frame = 0
-            traversal_count += 1
-            if traversal_count == TRAVERSALS_PER_ACTION:
-                action_change_pending = True
+        else:
+            character_x += direction * movement_step
 
         delay(frame_delay)
 
