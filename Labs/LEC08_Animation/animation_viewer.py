@@ -1,4 +1,5 @@
 from pathlib import Path
+import time
 
 from pico2d import *
 
@@ -15,6 +16,8 @@ CHARACTER_Y = 300
 CHARACTER_WIDTH = 162
 CHARACTER_HEIGHT = 160
 MOVEMENT_STEP = 8
+WALKS_PER_SEQUENCE = 5
+SEQUENCE_PAUSE = 1.0
 
 open_canvas(800, 600)
 sprite_sheet = load_image(str(Path(__file__).resolve().with_name("sprite_sheet.jpg")))
@@ -22,6 +25,8 @@ sprite_sheet = load_image(str(Path(__file__).resolve().with_name("sprite_sheet.j
 frame = 0
 character_x = CHARACTER_X_MIN
 direction = 1
+walk_count = 0
+pause_until = 0.0
 running = True
 while running:
     events = get_events()
@@ -32,6 +37,9 @@ while running:
             running = False
 
     if running:
+        now = time.monotonic()
+        paused = now < pause_until
+
         clear_canvas()
         sprite_sheet.clip_draw(0, 0, 40, 40, 400, 300, 800, 600)
         if direction > 0:
@@ -59,10 +67,21 @@ while running:
                 CHARACTER_HEIGHT,
             )
         update_canvas()
+
+        if paused:
+            delay(0.01)
+            continue
+
         frame = (frame + 1) % WALK_FRAME_COUNT
         character_x += direction * MOVEMENT_STEP
         if character_x >= CHARACTER_X_MAX or character_x <= CHARACTER_X_MIN:
+            character_x = min(max(character_x, CHARACTER_X_MIN), CHARACTER_X_MAX)
             direction *= -1
+            walk_count += 1
+            if walk_count == WALKS_PER_SEQUENCE:
+                walk_count = 0
+                pause_until = time.monotonic() + SEQUENCE_PAUSE
+
         delay(FRAME_DELAY)
 
 close_canvas()
