@@ -66,6 +66,10 @@ class AnimationPlayerTests(unittest.TestCase):
         self.assertEqual(player.current_animation.name, "first")
         self.assertEqual(player.current_frame, self.animations[0].frames[0])
 
+    def test_rejects_empty_catalog_when_creating_player(self):
+        with self.assertRaisesRegex(ValueError, "At least one animation"):
+            viewer.AnimationPlayer(())
+
     def test_advances_to_next_frame_after_frame_delay(self):
         player = viewer.AnimationPlayer(self.animations)
 

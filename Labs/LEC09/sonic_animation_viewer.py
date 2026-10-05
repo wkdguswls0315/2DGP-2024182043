@@ -193,6 +193,7 @@ def validate_animations(animations: tuple[Animation, ...]) -> None:
 
 class AnimationPlayer:
     def __init__(self, animations: tuple[Animation, ...]) -> None:
+        validate_animations(animations)
         self.animations = animations
         self.animation_index = 0
         self.frame_index = 0
