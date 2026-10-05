@@ -59,6 +59,15 @@ class AnimationPlayerTests(unittest.TestCase):
         self.assertEqual(player.frame_index, 1)
         self.assertEqual(player.current_frame, self.animations[0].frames[1])
 
+    def test_counts_a_cycle_when_last_frame_finishes(self):
+        player = viewer.AnimationPlayer(self.animations)
+
+        player.advance(0.2)
+
+        self.assertEqual(player.frame_index, 0)
+        self.assertEqual(player.completed_cycles, 1)
+        self.assertEqual(player.pause_remaining, 0.0)
+
 
 if __name__ == "__main__":
     unittest.main()
