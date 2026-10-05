@@ -37,7 +37,9 @@ class Animation:
     frame_delay: float
 
 
-def make_frames(boxes: tuple[tuple[int, int, int, int], ...]) -> tuple[SpriteFrame, ...]:
+def make_frames(
+    boxes: tuple[tuple[int, int, int, int], ...],
+) -> tuple[SpriteFrame, ...]:
     return tuple(SpriteFrame(*box) for box in boxes)
 
 
@@ -159,6 +161,34 @@ MAX_FRAME_HEIGHT = max(
 )
 
 
+def validate_animations(animations: tuple[Animation, ...]) -> None:
+    if not animations:
+        raise ValueError("At least one animation must be configured.")
+
+    for animation in animations:
+        if not animation.frames:
+            raise ValueError(f"Animation {animation.name!r} has no frames.")
+        if animation.frame_delay <= 0:
+            raise ValueError(
+                f"Animation {animation.name!r} must have a positive frame delay."
+            )
+
+        for frame in animation.frames:
+            if (
+                frame.left < 0
+                or frame.top < 0
+                or frame.width <= 0
+                or frame.height <= 0
+                or frame.left + frame.width > SPRITE_SHEET_WIDTH
+                or frame.top + frame.height > SPRITE_SHEET_HEIGHT
+            ):
+                raise ValueError(
+                    f"Frame {frame!r} in animation {animation.name!r} "
+                    f"is outside the {SPRITE_SHEET_WIDTH}x{SPRITE_SHEET_HEIGHT} "
+                    "sprite sheet."
+                )
+
+
 class AnimationPlayer:
     def __init__(self, animations: tuple[Animation, ...]) -> None:
         self.animations = animations
@@ -225,6 +255,7 @@ def draw_frame(sprite_sheet, frame: SpriteFrame) -> None:
 
 
 def main() -> None:
+    validate_animations(ANIMATIONS)
     open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
     sprite_sheet = load_image(
         str(Path(__file__).resolve().with_name("sonic-sprite.png"))
