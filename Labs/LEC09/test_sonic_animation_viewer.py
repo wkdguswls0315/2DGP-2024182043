@@ -51,6 +51,14 @@ class AnimationPlayerTests(unittest.TestCase):
         self.assertEqual(player.current_animation.name, "first")
         self.assertEqual(player.current_frame, self.animations[0].frames[0])
 
+    def test_advances_to_next_frame_after_frame_delay(self):
+        player = viewer.AnimationPlayer(self.animations)
+
+        player.advance(0.1)
+
+        self.assertEqual(player.frame_index, 1)
+        self.assertEqual(player.current_frame, self.animations[0].frames[1])
+
 
 if __name__ == "__main__":
     unittest.main()
