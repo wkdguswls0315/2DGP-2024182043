@@ -1,5 +1,6 @@
 import math
 import unittest
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 import sonic_animation_viewer as viewer
@@ -181,6 +182,22 @@ class ViewerLifecycleTests(unittest.TestCase):
             viewer.CANVAS_WIDTH,
             viewer.CANVAS_HEIGHT,
         )
+        close_canvas.assert_called_once_with()
+
+    def test_closes_canvas_after_window_close_event(self):
+        close_event = SimpleNamespace(type=viewer.SDL_QUIT)
+        with (
+            patch.object(viewer, "open_canvas"),
+            patch.object(viewer, "load_image", return_value=MagicMock()),
+            patch.object(viewer, "get_events", return_value=[close_event]),
+            patch.object(viewer, "clear_canvas"),
+            patch.object(viewer, "draw_frame"),
+            patch.object(viewer, "update_canvas"),
+            patch.object(viewer, "delay"),
+            patch.object(viewer, "close_canvas") as close_canvas,
+        ):
+            viewer.main()
+
         close_canvas.assert_called_once_with()
 
 
