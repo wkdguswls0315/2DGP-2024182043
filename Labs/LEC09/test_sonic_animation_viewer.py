@@ -48,6 +48,13 @@ class AnimationMetadataTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             viewer.validate_animations((animation,))
 
+    def test_rejects_negative_movement_speed(self):
+        frame = viewer.SpriteFrame(0, 0, 1, 1)
+        animation = viewer.Animation("invalid", (frame,), 0.1, -1.0)
+
+        with self.assertRaisesRegex(ValueError, "movement speed"):
+            viewer.validate_animations((animation,))
+
     def test_sprite_sheet_path_is_relative_to_viewer_file(self):
         path = viewer.get_sprite_sheet_path()
 
@@ -144,6 +151,39 @@ class AnimationPlayerTests(unittest.TestCase):
         self.assertEqual(player.frame_index, 0)
         self.assertEqual(player.completed_cycles, 0)
 
+    def test_moving_animation_updates_screen_position_over_time(self):
+        moving_animation = viewer.Animation(
+            "run",
+            self.animations[0].frames[:1],
+            0.1,
+            movement_speed=100.0,
+        )
+        player = viewer.AnimationPlayer((moving_animation,))
+
+        player.advance(0.05)
+
+        self.assertAlmostEqual(
+            player.position_x,
+            viewer.SPRITE_CENTER_X + 5.0,
+        )
+
+    def test_stationary_animation_does_not_change_screen_position(self):
+        player = viewer.AnimationPlayer(self.animations)
+
+        player.advance(0.05)
+
+        self.assertEqual(player.position_x, viewer.SPRITE_CENTER_X)
+
+    def test_position_reverses_at_screen_boundary(self):
+        position_x, direction = viewer.advance_horizontal_position(
+            viewer.MOVEMENT_MAX_X - 5,
+            1,
+            10,
+        )
+
+        self.assertEqual(position_x, viewer.MOVEMENT_MAX_X - 5)
+        self.assertEqual(direction, -1)
+
 
 class ViewerLifecycleTests(unittest.TestCase):
     def test_draws_frame_with_bottom_origin_and_preserved_aspect_ratio(self):
@@ -166,6 +206,19 @@ class ViewerLifecycleTests(unittest.TestCase):
             frame.width * scale,
             frame.height * scale,
         )
+
+    def test_draws_leftward_motion_with_horizontal_flip(self):
+        sprite_sheet = MagicMock()
+        frame = viewer.SpriteFrame(7, 11, 20, 10)
+
+        viewer.draw_frame(sprite_sheet, frame, position_x=300, direction=-1)
+
+        sprite_sheet.clip_composite_draw.assert_called_once()
+        self.assertEqual(
+            sprite_sheet.clip_composite_draw.call_args.args[4:8],
+            (0, "h", 300, viewer.SPRITE_CENTER_Y),
+        )
+        sprite_sheet.clip_draw.assert_not_called()
 
     def test_closes_canvas_when_asset_loading_fails(self):
         with (

@@ -14,6 +14,8 @@ SPRITE_CENTER_X = CANVAS_WIDTH // 2
 SPRITE_CENTER_Y = CANVAS_HEIGHT // 2
 SPRITE_MAX_WIDTH = 420
 SPRITE_MAX_HEIGHT = 420
+MOVEMENT_MIN_X = SPRITE_MAX_WIDTH / 2
+MOVEMENT_MAX_X = CANVAS_WIDTH - MOVEMENT_MIN_X
 ANIMATION_REPEAT_COUNT = 5
 ACTION_PAUSE = 1.0
 TIME_EPSILON = 1e-9
@@ -36,6 +38,7 @@ class Animation:
     name: str
     frames: tuple[SpriteFrame, ...]
     frame_delay: float
+    movement_speed: float = 0.0
 
 
 def make_frames(
@@ -56,6 +59,7 @@ ANIMATIONS = (
             )
         ),
         0.09,
+        180.0,
     ),
     Animation(
         "Sonic run (row 2)",
@@ -68,6 +72,7 @@ ANIMATIONS = (
             )
         ),
         0.09,
+        180.0,
     ),
     Animation(
         "Sonic action (row 3)",
@@ -99,6 +104,7 @@ ANIMATIONS = (
             )
         ),
         0.08,
+        160.0,
     ),
     Animation(
         "Sonic action (row 6)",
@@ -130,6 +136,7 @@ ANIMATIONS = (
             )
         ),
         0.1,
+        120.0,
     ),
     Animation(
         "Sonic run (row 9)",
@@ -141,6 +148,7 @@ ANIMATIONS = (
             )
         ),
         0.09,
+        180.0,
     ),
     Animation(
         "Sonic attack (row 10)",
@@ -174,6 +182,14 @@ def validate_animations(animations: tuple[Animation, ...]) -> None:
                 f"Animation {animation.name!r} must have a finite, "
                 "positive frame delay."
             )
+        if (
+            not math.isfinite(animation.movement_speed)
+            or animation.movement_speed < 0
+        ):
+            raise ValueError(
+                f"Animation {animation.name!r} must have a finite, "
+                "non-negative movement speed."
+            )
 
         for frame in animation.frames:
             if (
@@ -191,6 +207,25 @@ def validate_animations(animations: tuple[Animation, ...]) -> None:
                 )
 
 
+def advance_horizontal_position(
+    position_x: float,
+    direction: int,
+    distance: float,
+) -> tuple[float, int]:
+    screen_span = MOVEMENT_MAX_X - MOVEMENT_MIN_X
+    if direction > 0:
+        distance_from_start = position_x - MOVEMENT_MIN_X
+    else:
+        distance_from_start = 2 * screen_span - (
+            position_x - MOVEMENT_MIN_X
+        )
+
+    position_on_path = (distance_from_start + distance) % (2 * screen_span)
+    if position_on_path < screen_span:
+        return MOVEMENT_MIN_X + position_on_path, 1
+    return MOVEMENT_MAX_X - (position_on_path - screen_span), -1
+
+
 class AnimationPlayer:
     def __init__(self, animations: tuple[Animation, ...]) -> None:
         validate_animations(animations)
@@ -200,6 +235,8 @@ class AnimationPlayer:
         self.completed_cycles = 0
         self.frame_elapsed = 0.0
         self.pause_remaining = 0.0
+        self.position_x = SPRITE_CENTER_X
+        self.direction = 1
 
     @property
     def current_animation(self) -> Animation:
@@ -232,6 +269,15 @@ class AnimationPlayer:
             consumed = min(elapsed, frame_delay - self.frame_elapsed)
             elapsed -= consumed
             self.frame_elapsed += consumed
+            movement_distance = (
+                self.current_animation.movement_speed * consumed
+            )
+            if movement_distance > 0:
+                self.position_x, self.direction = advance_horizontal_position(
+                    self.position_x,
+                    self.direction,
+                    movement_distance,
+                )
 
             if self.frame_elapsed >= frame_delay - TIME_EPSILON:
                 self.frame_elapsed = 0.0
@@ -243,21 +289,40 @@ class AnimationPlayer:
                         self.pause_remaining = ACTION_PAUSE
 
 
-def draw_frame(sprite_sheet, frame: SpriteFrame) -> None:
+def draw_frame(
+    sprite_sheet,
+    frame: SpriteFrame,
+    position_x: float = SPRITE_CENTER_X,
+    direction: int = 1,
+) -> None:
     scale = min(
         SPRITE_MAX_WIDTH / MAX_FRAME_WIDTH,
         SPRITE_MAX_HEIGHT / MAX_FRAME_HEIGHT,
     )
-    sprite_sheet.clip_draw(
+    draw_arguments = (
         frame.left,
         frame.bottom,
         frame.width,
         frame.height,
-        SPRITE_CENTER_X,
+    )
+    draw_position = (
+        position_x,
         SPRITE_CENTER_Y,
         frame.width * scale,
         frame.height * scale,
     )
+    if direction < 0:
+        sprite_sheet.clip_composite_draw(
+            *draw_arguments,
+            0,
+            "h",
+            *draw_position,
+        )
+    else:
+        sprite_sheet.clip_draw(
+            *draw_arguments,
+            *draw_position,
+        )
 
 
 def get_sprite_sheet_path() -> Path:
@@ -289,7 +354,12 @@ def main() -> None:
                 print(f"재생 시작: {player.current_animation.name}")
 
             clear_canvas()
-            draw_frame(sprite_sheet, player.current_frame)
+            draw_frame(
+                sprite_sheet,
+                player.current_frame,
+                player.position_x,
+                player.direction,
+            )
             update_canvas()
             delay(1 / 60)
     finally:
