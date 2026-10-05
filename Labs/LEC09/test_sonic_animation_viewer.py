@@ -31,6 +31,13 @@ class AnimationMetadataTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             viewer.validate_animations((animation,))
 
+    def test_rejects_non_positive_frame_delay(self):
+        frame = viewer.SpriteFrame(0, 0, 1, 1)
+        animation = viewer.Animation("invalid", (frame,), 0.0)
+
+        with self.assertRaises(ValueError):
+            viewer.validate_animations((animation,))
+
 
 class AnimationPlayerTests(unittest.TestCase):
     def setUp(self):
