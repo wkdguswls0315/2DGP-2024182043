@@ -267,32 +267,33 @@ def get_sprite_sheet_path() -> Path:
 def main() -> None:
     validate_animations(ANIMATIONS)
     open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
-    sprite_sheet = load_image(str(get_sprite_sheet_path()))
-    player = AnimationPlayer(ANIMATIONS)
-    previous_time = time.monotonic()
-    print(f"재생 시작: {player.current_animation.name}")
+    try:
+        sprite_sheet = load_image(str(get_sprite_sheet_path()))
+        player = AnimationPlayer(ANIMATIONS)
+        previous_time = time.monotonic()
+        print(f"재생 시작: {player.current_animation.name}")
 
-    running = True
-    while running:
-        for event in get_events():
-            if event.type == SDL_QUIT or (
-                event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE
-            ):
-                running = False
+        running = True
+        while running:
+            for event in get_events():
+                if event.type == SDL_QUIT or (
+                    event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE
+                ):
+                    running = False
 
-        now = time.monotonic()
-        previous_animation_index = player.animation_index
-        player.advance(now - previous_time)
-        previous_time = now
-        if player.animation_index != previous_animation_index:
-            print(f"재생 시작: {player.current_animation.name}")
+            now = time.monotonic()
+            previous_animation_index = player.animation_index
+            player.advance(now - previous_time)
+            previous_time = now
+            if player.animation_index != previous_animation_index:
+                print(f"재생 시작: {player.current_animation.name}")
 
-        clear_canvas()
-        draw_frame(sprite_sheet, player.current_frame)
-        update_canvas()
-        delay(1 / 60)
-
-    close_canvas()
+            clear_canvas()
+            draw_frame(sprite_sheet, player.current_frame)
+            update_canvas()
+            delay(1 / 60)
+    finally:
+        close_canvas()
 
 
 if __name__ == "__main__":

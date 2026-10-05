@@ -1,5 +1,6 @@
 import math
 import unittest
+from unittest.mock import patch
 
 import sonic_animation_viewer as viewer
 
@@ -141,6 +142,25 @@ class AnimationPlayerTests(unittest.TestCase):
         self.assertEqual(player.animation_index, 0)
         self.assertEqual(player.frame_index, 0)
         self.assertEqual(player.completed_cycles, 0)
+
+
+class ViewerLifecycleTests(unittest.TestCase):
+    def test_closes_canvas_when_asset_loading_fails(self):
+        with (
+            patch.object(viewer, "open_canvas") as open_canvas,
+            patch.object(
+                viewer, "load_image", side_effect=OSError("asset unavailable")
+            ),
+            patch.object(viewer, "close_canvas") as close_canvas,
+        ):
+            with self.assertRaisesRegex(OSError, "asset unavailable"):
+                viewer.main()
+
+        open_canvas.assert_called_once_with(
+            viewer.CANVAS_WIDTH,
+            viewer.CANVAS_HEIGHT,
+        )
+        close_canvas.assert_called_once_with()
 
 
 if __name__ == "__main__":
