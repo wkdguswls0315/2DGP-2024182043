@@ -1,3 +1,4 @@
+import math
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -168,9 +169,10 @@ def validate_animations(animations: tuple[Animation, ...]) -> None:
     for animation in animations:
         if not animation.frames:
             raise ValueError(f"Animation {animation.name!r} has no frames.")
-        if animation.frame_delay <= 0:
+        if not math.isfinite(animation.frame_delay) or animation.frame_delay <= 0:
             raise ValueError(
-                f"Animation {animation.name!r} must have a positive frame delay."
+                f"Animation {animation.name!r} must have a finite, "
+                "positive frame delay."
             )
 
         for frame in animation.frames:
