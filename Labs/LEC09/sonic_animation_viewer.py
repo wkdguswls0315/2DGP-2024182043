@@ -210,6 +210,9 @@ class AnimationPlayer:
         return self.current_animation.frames[self.frame_index]
 
     def advance(self, elapsed: float) -> None:
+        if not math.isfinite(elapsed) or elapsed < 0:
+            raise ValueError("Elapsed time must be finite and non-negative.")
+
         while elapsed > 0:
             if self.pause_remaining > 0:
                 consumed = min(elapsed, self.pause_remaining)

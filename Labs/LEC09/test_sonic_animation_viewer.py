@@ -78,6 +78,14 @@ class AnimationPlayerTests(unittest.TestCase):
         self.assertEqual(player.frame_index, 1)
         self.assertEqual(player.current_frame, self.animations[0].frames[1])
 
+    def test_rejects_invalid_elapsed_time(self):
+        player = viewer.AnimationPlayer(self.animations)
+
+        for elapsed in (-0.1, math.nan, math.inf):
+            with self.subTest(elapsed=elapsed):
+                with self.assertRaisesRegex(ValueError, "Elapsed time"):
+                    player.advance(elapsed)
+
     def test_counts_a_cycle_when_last_frame_finishes(self):
         player = viewer.AnimationPlayer(self.animations)
 
