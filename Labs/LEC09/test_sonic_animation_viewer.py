@@ -100,6 +100,15 @@ class AnimationPlayerTests(unittest.TestCase):
         self.assertEqual(player.completed_cycles, 0)
         self.assertEqual(player.frame_elapsed, 0.0)
 
+    def test_wraps_from_last_animation_to_first(self):
+        player = viewer.AnimationPlayer(self.animations)
+
+        player.advance(3.5)
+
+        self.assertEqual(player.animation_index, 0)
+        self.assertEqual(player.frame_index, 0)
+        self.assertEqual(player.completed_cycles, 0)
+
 
 if __name__ == "__main__":
     unittest.main()
