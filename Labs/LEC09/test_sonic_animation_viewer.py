@@ -68,6 +68,19 @@ class AnimationPlayerTests(unittest.TestCase):
         self.assertEqual(player.completed_cycles, 1)
         self.assertEqual(player.pause_remaining, 0.0)
 
+    def test_requires_five_complete_cycles_before_pausing(self):
+        player = viewer.AnimationPlayer(self.animations)
+
+        player.advance(0.99)
+
+        self.assertEqual(player.completed_cycles, 4)
+        self.assertEqual(player.pause_remaining, 0.0)
+
+        player.advance(0.01)
+
+        self.assertEqual(player.completed_cycles, 5)
+        self.assertAlmostEqual(player.pause_remaining, viewer.ACTION_PAUSE)
+
 
 if __name__ == "__main__":
     unittest.main()
