@@ -46,6 +46,12 @@ class AnimationMetadataTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             viewer.validate_animations((animation,))
 
+    def test_sprite_sheet_path_is_relative_to_viewer_file(self):
+        path = viewer.get_sprite_sheet_path()
+
+        self.assertEqual(path.name, "sonic-sprite.png")
+        self.assertTrue(path.is_file())
+
 
 class AnimationPlayerTests(unittest.TestCase):
     def setUp(self):

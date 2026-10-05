@@ -260,12 +260,14 @@ def draw_frame(sprite_sheet, frame: SpriteFrame) -> None:
     )
 
 
+def get_sprite_sheet_path() -> Path:
+    return Path(__file__).resolve().with_name("sonic-sprite.png")
+
+
 def main() -> None:
     validate_animations(ANIMATIONS)
     open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
-    sprite_sheet = load_image(
-        str(Path(__file__).resolve().with_name("sonic-sprite.png"))
-    )
+    sprite_sheet = load_image(str(get_sprite_sheet_path()))
     player = AnimationPlayer(ANIMATIONS)
     previous_time = time.monotonic()
     print(f"재생 시작: {player.current_animation.name}")
