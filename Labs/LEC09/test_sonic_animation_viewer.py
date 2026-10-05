@@ -90,6 +90,16 @@ class AnimationPlayerTests(unittest.TestCase):
         self.assertEqual(player.animation_index, 0)
         self.assertAlmostEqual(player.pause_remaining, 0.6)
 
+    def test_starts_next_animation_with_reset_progress(self):
+        player = viewer.AnimationPlayer(self.animations)
+
+        player.advance(2.0)
+
+        self.assertEqual(player.animation_index, 1)
+        self.assertEqual(player.frame_index, 0)
+        self.assertEqual(player.completed_cycles, 0)
+        self.assertEqual(player.frame_elapsed, 0.0)
+
 
 if __name__ == "__main__":
     unittest.main()
