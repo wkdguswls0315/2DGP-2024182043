@@ -81,6 +81,15 @@ class AnimationPlayerTests(unittest.TestCase):
         self.assertEqual(player.completed_cycles, 5)
         self.assertAlmostEqual(player.pause_remaining, viewer.ACTION_PAUSE)
 
+    def test_keeps_current_animation_during_inter_action_pause(self):
+        player = viewer.AnimationPlayer(self.animations)
+
+        player.advance(1.0)
+        player.advance(0.4)
+
+        self.assertEqual(player.animation_index, 0)
+        self.assertAlmostEqual(player.pause_remaining, 0.6)
+
 
 if __name__ == "__main__":
     unittest.main()
