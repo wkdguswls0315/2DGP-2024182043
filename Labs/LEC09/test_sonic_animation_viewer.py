@@ -1,6 +1,6 @@
 import math
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import sonic_animation_viewer as viewer
 
@@ -145,6 +145,27 @@ class AnimationPlayerTests(unittest.TestCase):
 
 
 class ViewerLifecycleTests(unittest.TestCase):
+    def test_draws_frame_with_bottom_origin_and_preserved_aspect_ratio(self):
+        sprite_sheet = MagicMock()
+        frame = viewer.SpriteFrame(7, 11, 20, 10)
+        scale = min(
+            viewer.SPRITE_MAX_WIDTH / viewer.MAX_FRAME_WIDTH,
+            viewer.SPRITE_MAX_HEIGHT / viewer.MAX_FRAME_HEIGHT,
+        )
+
+        viewer.draw_frame(sprite_sheet, frame)
+
+        sprite_sheet.clip_draw.assert_called_once_with(
+            frame.left,
+            viewer.SPRITE_SHEET_HEIGHT - frame.top - frame.height,
+            frame.width,
+            frame.height,
+            viewer.SPRITE_CENTER_X,
+            viewer.SPRITE_CENTER_Y,
+            frame.width * scale,
+            frame.height * scale,
+        )
+
     def test_closes_canvas_when_asset_loading_fails(self):
         with (
             patch.object(viewer, "open_canvas") as open_canvas,
