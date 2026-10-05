@@ -32,5 +32,25 @@ class AnimationMetadataTests(unittest.TestCase):
             viewer.validate_animations((animation,))
 
 
+class AnimationPlayerTests(unittest.TestCase):
+    def setUp(self):
+        frames = (
+            viewer.SpriteFrame(0, 0, 1, 1),
+            viewer.SpriteFrame(1, 0, 1, 1),
+        )
+        self.animations = (
+            viewer.Animation("first", frames, 0.1),
+            viewer.Animation("second", frames[:1], 0.1),
+        )
+
+    def test_starts_at_first_frame_of_first_animation(self):
+        player = viewer.AnimationPlayer(self.animations)
+
+        self.assertEqual(player.animation_index, 0)
+        self.assertEqual(player.frame_index, 0)
+        self.assertEqual(player.current_animation.name, "first")
+        self.assertEqual(player.current_frame, self.animations[0].frames[0])
+
+
 if __name__ == "__main__":
     unittest.main()
