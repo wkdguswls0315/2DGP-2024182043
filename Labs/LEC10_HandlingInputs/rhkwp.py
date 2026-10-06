@@ -18,12 +18,6 @@ def handle_events():
         if event.type == SDL_QUIT:
             running = False
 
-        elif event.type == SDL_MOUSEMOTION:
-            new_x, new_y = event.x, TUK_HEIGHT - 1 - event.y
-            if new_x != x:
-                facing_right = new_x > x
-            x, y = new_x, new_y
-
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 running = False
@@ -43,9 +37,6 @@ running = True
 frame = 0
 x, y = TUK_WIDTH // 2, TUK_HEIGHT // 2
 facing_right = True
-
-hide_cursor()
-
 
 while running:
     clear_canvas()
