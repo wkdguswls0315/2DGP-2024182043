@@ -10,7 +10,6 @@ character = load_image('animation_sheet.png')
 
 def handle_events():
     global running
-    global x, y, facing_right
 
     events = get_events()
 
@@ -21,22 +20,34 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 running = False
-            elif event.key == SDLK_LEFT:
-                x -= 10
-                facing_right = False
-            elif event.key == SDLK_RIGHT:
-                x += 10
-                facing_right = True
-            elif event.key == SDLK_UP:
-                y += 10
-            elif event.key == SDLK_DOWN:
-                y -= 10
+            else:
+                keys_down.add(event.key)
+
+        elif event.type == SDL_KEYUP:
+            keys_down.discard(event.key)
+
+
+def move_character():
+    global x, y, facing_right
+
+    if SDLK_LEFT in keys_down and SDLK_RIGHT not in keys_down:
+        x -= 10
+        facing_right = False
+    elif SDLK_RIGHT in keys_down and SDLK_LEFT not in keys_down:
+        x += 10
+        facing_right = True
+
+    if SDLK_UP in keys_down and SDLK_DOWN not in keys_down:
+        y += 10
+    elif SDLK_DOWN in keys_down and SDLK_UP not in keys_down:
+        y -= 10
 
 
 running = True
 frame = 0
 x, y = TUK_WIDTH // 2, TUK_HEIGHT // 2
 facing_right = True
+keys_down = set()
 
 while running:
     clear_canvas()
@@ -55,6 +66,7 @@ while running:
     update_canvas()
 
     handle_events()
+    move_character()
 
     frame = (frame + 1) % 8
     delay(0.05)
