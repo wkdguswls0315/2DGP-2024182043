@@ -28,25 +28,31 @@ def handle_events():
 
 
 def move_character():
-    global x, y, facing_right
+    global x, y, facing_right, moving
+    moving = False
 
     if SDLK_LEFT in keys_down and SDLK_RIGHT not in keys_down:
         x -= 10
         facing_right = False
+        moving = True
     elif SDLK_RIGHT in keys_down and SDLK_LEFT not in keys_down:
         x += 10
         facing_right = True
+        moving = True
 
     if SDLK_UP in keys_down and SDLK_DOWN not in keys_down:
         y += 10
+        moving = True
     elif SDLK_DOWN in keys_down and SDLK_UP not in keys_down:
         y -= 10
+        moving = True
 
 
 running = True
 frame = 0
 x, y = TUK_WIDTH // 2, TUK_HEIGHT // 2
 facing_right = True
+moving = False
 keys_down = set()
 
 while running:
@@ -56,7 +62,7 @@ while running:
 
     character.clip_draw(
         frame * 100,
-        100 if facing_right else 0,
+        (100 if moving else 300) if facing_right else (0 if moving else 200),
         100,
         100,
         x,
