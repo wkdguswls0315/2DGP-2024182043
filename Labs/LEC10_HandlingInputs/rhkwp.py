@@ -10,7 +10,7 @@ character = load_image('animation_sheet.png')
 
 def handle_events():
     global running
-    global x, y
+    global x, y, facing_right
 
     events = get_events()
 
@@ -19,11 +19,20 @@ def handle_events():
             running = False
 
         elif event.type == SDL_MOUSEMOTION:
-            x, y = event.x, TUK_HEIGHT - 1 - event.y
+            new_x, new_y = event.x, TUK_HEIGHT - 1 - event.y
+            if new_x != x:
+                facing_right = new_x > x
+            x, y = new_x, new_y
 
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 running = False
+            elif event.key == SDLK_LEFT:
+                x -= 10
+                facing_right = False
+            elif event.key == SDLK_RIGHT:
+                x += 10
+                facing_right = True
             elif event.key == SDLK_UP:
                 y += 10
             elif event.key == SDLK_DOWN:
@@ -33,6 +42,7 @@ def handle_events():
 running = True
 frame = 0
 x, y = TUK_WIDTH // 2, TUK_HEIGHT // 2
+facing_right = True
 
 hide_cursor()
 
@@ -44,7 +54,7 @@ while running:
 
     character.clip_draw(
         frame * 100,
-        100 * 1,
+        100 if facing_right else 0,
         100,
         100,
         x,
