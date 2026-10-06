@@ -1,6 +1,7 @@
 from pico2d import *
 
 TUK_WIDTH, TUK_HEIGHT = 1280, 1024
+CHARACTER_WIDTH, CHARACTER_HEIGHT = 100, 100
 
 open_canvas(TUK_WIDTH, TUK_HEIGHT)
 
@@ -29,23 +30,23 @@ def handle_events():
 
 def move_character():
     global x, y, facing_right, moving
-    moving = False
+    previous_x, previous_y = x, y
 
     if SDLK_LEFT in keys_down and SDLK_RIGHT not in keys_down:
         x -= 10
         facing_right = False
-        moving = True
     elif SDLK_RIGHT in keys_down and SDLK_LEFT not in keys_down:
         x += 10
         facing_right = True
-        moving = True
 
     if SDLK_UP in keys_down and SDLK_DOWN not in keys_down:
         y += 10
-        moving = True
     elif SDLK_DOWN in keys_down and SDLK_UP not in keys_down:
         y -= 10
-        moving = True
+
+    x = max(CHARACTER_WIDTH // 2, min(x, TUK_WIDTH - CHARACTER_WIDTH // 2))
+    y = max(CHARACTER_HEIGHT // 2, min(y, TUK_HEIGHT - CHARACTER_HEIGHT // 2))
+    moving = x != previous_x or y != previous_y
 
 
 running = True
@@ -63,8 +64,8 @@ while running:
     character.clip_draw(
         frame * 100,
         (100 if moving else 300) if facing_right else (0 if moving else 200),
-        100,
-        100,
+        CHARACTER_WIDTH,
+        CHARACTER_HEIGHT,
         x,
         y
     )
